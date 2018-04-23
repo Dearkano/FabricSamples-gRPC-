@@ -13,6 +13,9 @@ var path = require('path');
 var util = require('util');
 var os = require('os');
 
+query();
+
+async function query(){
 //
 var fabric_client = new Fabric_Client();
 
@@ -28,8 +31,9 @@ console.log('Store path:'+store_path);
 var tx_id = null;
 
 // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
-Fabric_Client.newDefaultKeyValueStore({ path: store_path
-}).then((state_store) => {
+const state_store = await Fabric_Client.newDefaultKeyValueStore({ path: store_path
+});
+
 	// assign the store to the fabric client
 	fabric_client.setStateStore(state_store);
 	var crypto_suite = Fabric_Client.newCryptoSuite();
@@ -40,8 +44,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	fabric_client.setCryptoSuite(crypto_suite);
 
 	// get the enrolled user from persistence, this user will sign all requests
-	return fabric_client.getUserContext('user1', true);
-}).then((user_from_store) => {
+	const user_from_store = await fabric_client.getUserContext('user1', true);
+
 	if (user_from_store && user_from_store.isEnrolled()) {
 		console.log('Successfully loaded user1 from persistence');
 		member_user = user_from_store;
@@ -59,8 +63,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	};
 
 	// send the query proposal to the peer
-	return channel.queryByChaincode(request);
-}).then((query_responses) => {
+	const query_responses = await channel.queryByChaincode(request);
+
 	console.log("Query has completed, checking results");
 	// query_responses could have more than one  results if there multiple peers were used as targets
 	if (query_responses && query_responses.length == 1) {
@@ -72,6 +76,4 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	} else {
 		console.log("No payloads were returned from query");
 	}
-}).catch((err) => {
-	console.error('Failed to query successfully :: ' + err);
-});
+}
