@@ -13,7 +13,7 @@ var path = require('path');
 var util = require('util');
 var os = require('os');
 
-createCar();
+init();
 async function invoke(fabric_client, channel, request, tx_id) {
 	//
 	//var fabric_client = new Fabric_Client();
@@ -165,7 +165,7 @@ async function invoke(fabric_client, channel, request, tx_id) {
 	}
 }
 
-async function createCar() {
+async function init() {
 	var fabric_client = new Fabric_Client();
 	var channel = fabric_client.newChannel('mychannel');
 	var peer = fabric_client.newPeer('grpc://47.100.192.19:7051');
@@ -204,10 +204,11 @@ async function createCar() {
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'createCar',
-		args: ['CAR3', 'Tesla', 'Model-S', 'Pink', 'Satomi'],
+		fcn: 'initLedger',
+		args: [''],
 		chainId: 'mychannel',
 		txId: tx_id
-	};
+    };
+    console.log(request.fcn);
 	invoke(fabric_client, channel, request, tx_id);
 }

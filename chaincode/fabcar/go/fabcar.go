@@ -49,7 +49,11 @@ type Car struct {
 	Colour string `json:"colour"`
 	Owner  string `json:"owner"`
 }
-
+type Resource struct{
+	Name   string `json:"name"`
+	Url    string `json:"url"`
+	Owner  string `json:"owner"`
+}
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
  * Best practice is to have any Ledger initialization in separate function -- see initLedger()
@@ -66,6 +70,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 
 	// Retrieve the requested Smart Contract function and arguments
 	function, args := APIstub.GetFunctionAndParameters()
+	
 	// Route to the appropriate handler function to interact with the ledger appropriately
 	if function == "queryCar" {
 		return s.queryCar(APIstub, args)
@@ -77,11 +82,39 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryAllCars(APIstub)
 	} else if function == "changeCarOwner" {
 		return s.changeCarOwner(APIstub, args)
+	} else if function == "initResources" {
+		return s.initResources(APIstub)
+	} else if function == "queryResource" {
+		return s.queryResource(APIstub, args)
 	}
 
-	return shim.Error("Invalid Smart Contract function name.")
+	return shim.Error("Invalid Smart Contract function name. function name = "+function)
 }
+func (s *SmartContract) initResources(APIstub shim.ChaincodeStubInterface) sc.Response{
+	resources := []Resource{
+		Resource{Name:"baidu",Url:"http://www.baidu.com",Owner:"Yanhong Li"},
+		Resource{Name:"github",Url:"https://github.com/Dearkano",Owner:"Vayne Tian"},
+		Resource{Name:"cc98",Url:"https://www.cc98.org",Owner:"leilei1010"},
+		Resource{Name:"fabric",Url:"http://47.100.192.19",Owner:"Vayne Tian"},
+	}
+	i := 0
+	for i < len(resources) {
+		fmt.Println("i is ", i)
+		resourceAsBytes, _ := json.Marshal(cars[i])
+		APIstub.PutState("Resource"+strconv.Itoa(i),resourceAsBytes)
+		fmt.Println("Added", resources[i])
+		i = i + 1
+	}
 
+	return shim.Success(nil)
+}
+func (s *SmartContract) queryResource(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+	resourceAsBytes, _ := APIstub.GetState(args[0])
+	return shim.Success(resourceAsBytes)
+} 
 func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
@@ -96,14 +129,6 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	cars := []Car{
 		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
 		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
 	}
 
 	i := 0
@@ -202,3 +227,5 @@ func main() {
 		fmt.Printf("Error creating new Smart Contract: %s", err)
 	}
 }
+
+
