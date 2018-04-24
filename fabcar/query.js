@@ -15,7 +15,7 @@ var os = require('os');
 
 
 
-queryAllCars();
+queryResource();
 
 async function query(request) {
 	//
@@ -68,8 +68,8 @@ async function query(request) {
 	*/
 
 	// send the query proposal to the peer
-	const query_responses = await channel.queryByChaincode(request);
-
+	//const query_responses = await channel.queryByChaincode(request);
+	//const query_responses = await channel.
 	console.log("Query has completed, checking results");
 	// query_responses could have more than one  results if there multiple peers were used as targets
 	if (query_responses && query_responses.length == 1) {
@@ -96,7 +96,7 @@ function queryResource(){
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'fabcar',
 		fcn: 'queryResource',
-		args: ['baidu']
+		args: ['Resource1']
 	};
 	console.log(request.fcn);
 	query(request);
@@ -119,4 +119,8 @@ function queryCar(){
 		args: ['CAR1']
 	};
 	query(request);
+}
+
+function getChannelConfig(){
+	
 }

@@ -204,7 +204,7 @@ async function init() {
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'initLedger',
+		fcn: 'initResources',
 		args: [''],
 		chainId: 'mychannel',
 		txId: tx_id

@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\chaincode",
+    "\\chaincode\\fabcar",
+    "\\chaincode\\fabcar\\go",
+    "\\chaincode\\marbles02\\go",
+    "\\chaincode\\sacc",
+    "\\fabric-ca",
+    "\\first-network",
+    "\\first-network\\base",
+    "\\first-network\\scripts",
+    "\\scripts"
+  ],
+  "PreviewInSolutionExplorer": false
+}

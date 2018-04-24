@@ -100,7 +100,7 @@ func (s *SmartContract) initResources(APIstub shim.ChaincodeStubInterface) sc.Re
 	i := 0
 	for i < len(resources) {
 		fmt.Println("i is ", i)
-		resourceAsBytes, _ := json.Marshal(cars[i])
+		resourceAsBytes, _ := json.Marshal(resources[i])
 		APIstub.PutState("Resource"+strconv.Itoa(i),resourceAsBytes)
 		fmt.Println("Added", resources[i])
 		i = i + 1
